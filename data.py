@@ -1,11 +1,12 @@
 import requests
-import xml.etree.ElementTree as ET
 
-baseURL = "https://demo.aeries.net/aeries/api/v5/schools/"
+baseURL = "https://demo.aeries.net/aeries/api/v5/schools/" #base url to acess the aeries demo api
 headers = {'content-type': 'application/json',
             "AERIES-CERT": "477abe9e7d27439681d62f4e0de1f5e1"
           }
+path = []
         
+#simple api call function        
 def makeAPICall(url):
   return requests.get(url, headers=headers)
 
@@ -18,7 +19,37 @@ def getSchools():
     sn = entry["Name"]
     print(sc, ' - ', sn)
 
-#def getSchools(schoolCode):
+#Get data about a specfic school
+def getSchools(schoolCode):
+  url = baseURL + str(schoolCode)
+  resp = makeAPICall(url)
+  data = resp.json()
+  walk(data)
 
+#https://stackoverflow.com/a/54000999
+def walk(d):
+  global path
+  for k,v in d.items():
+    if isinstance(v, str) or isinstance(v, int) or isinstance(v, float):
+        path.append(k)
+        print("{} = {}".format(".".join(path), v)) 
+        path.pop()
+    elif v is None:
+        path.append(k)
+        # do something special
+        path.pop()
+    elif isinstance(v, list):
+        path.append(k)
+        for v_int in v:
+          walk(v_int)
+        path.pop()
+    elif isinstance(v, dict):
+        path.append(k)
+        walk(v)
+        path.pop()
+    else:
+        print("###Type {} not recognized: {}.{}={}".format(type(v), ".".join(path),k, v))
+
+#main
 if __name__ == "__main__":
-  getSchools()
+  getSchools("994")
