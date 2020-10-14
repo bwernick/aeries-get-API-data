@@ -1,4 +1,5 @@
 import requests
+import csv
 
 baseURL = "https://demo.aeries.net/aeries/api/v5/schools/" #base url to acess the aeries demo api
 headers = {'content-type': 'application/json',
@@ -44,15 +45,44 @@ def getSchools():
     sn = entry["Name"]
     print(sc, ' - ', sn)
 
-#Get data about a specfic school
-def getSchools(schoolCode):
+def getSchools_SC(schoolCode):
   url = baseURL + str(schoolCode)
   resp = makeAPICall(url)
   data = resp.json()
   walk(data)
 
+def getSchoolBellSchedule(schoolCode):
+  url = baseURL + str(schoolCode) + "/BellSchedule"
+  resp = makeAPICall(url)
+  data = resp.json()
+  for entry in data:
+    print(entry)
 
+def getStudentInfo(schoolCode):
+  url = baseURL + str(schoolCode) + "/students"
+  resp = makeAPICall(url)
+  data = resp.json()
+
+  #https://gist.github.com/mabroor/2828962
+  f = open("students.csv", 'w')
+  fieldnames = data[0].keys()
+
+  csvwriter = csv.DictWriter(f, delimiter=',', fieldnames=fieldnames)
+  csvwriter.writerow(dict((fn, fn) for fn in fieldnames))
+  for row in data:
+      csvwriter.writerow(row)
+  f.close()
+
+
+def getStudentInfo_SID(schoolCode, studentID):
+  url = baseURL + str(schoolCode) + "/students" + str(studentID)
+
+def getStudentInfo_GL(schoolCode, gradeLevel):
+  url = baseURL + str(schoolCode) + "/students/grade/" + str(gradeLevel)
+
+def getStudentInfo_NM(schoolCode, studentNumber):
+  url = baseURL + str(schoolCode) + "/students/sn/" + str(studentNumber)
 
 #main
 if __name__ == "__main__":
-  getSchools("994")
+  getStudentInfo("994")
