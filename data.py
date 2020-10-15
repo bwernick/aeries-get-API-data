@@ -62,17 +62,18 @@ def getStudentInfo(schoolCode):
   url = baseURL + str(schoolCode) + "/students"
   resp = makeAPICall(url)
   data = resp.json()
+  linecount = -1
 
   #https://gist.github.com/mabroor/2828962
   f = open("students.csv", 'w')
   fieldnames = data[0].keys()
-
   csvwriter = csv.DictWriter(f, delimiter=',', fieldnames=fieldnames)
   csvwriter.writerow(dict((fn, fn) for fn in fieldnames))
   for row in data:
       csvwriter.writerow(row)
-  f.close()
-
+      linecount += 1
+  f.close() 
+  print('Wrote ' + str(linecount) + ' students to "students.csv"')
 
 def getStudentInfo_SID(schoolCode, studentID):
   url = baseURL + str(schoolCode) + "/students" + str(studentID)
