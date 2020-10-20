@@ -112,5 +112,5 @@ def getStudentInfo_NM(schoolCode, studentNumber):
 
 #main
 if __name__ == "__main__":
-  getStudentInfo_NM("994", "9")
+  #@TODO: implement a UI / function selector
   
