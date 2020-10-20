@@ -1,5 +1,6 @@
 import requests
 import csv
+import json
 
 baseURL = "https://demo.aeries.net/aeries/api/v5/schools/" #base url to acess the aeries demo api
 headers = {'content-type': 'application/json',
@@ -45,20 +46,22 @@ def getSchools():
     sn = entry["Name"]
     print(sc, ' - ', sn)
 
+#displays information on a specfic school to the console
 def getSchools_SC(schoolCode):
   url = baseURL + str(schoolCode)
   resp = makeAPICall(url)
   data = resp.json()
-  walk(data)
+  print(json.dumps(data, indent=4))
 
+#displays the bell schedule on the console
 def getSchoolBellSchedule(schoolCode):
   url = baseURL + str(schoolCode) + "/BellSchedule"
   resp = makeAPICall(url)
   data = resp.json()
-  for entry in data:
-    print(entry)
+  print(json.dumps(data, indent=4))
 
-def getStudentInfo(schoolCode):
+#generates a CSV file of all student info from a specfic school
+def getStudentInfoCSV(schoolCode):
   url = baseURL + str(schoolCode) + "/students"
   resp = makeAPICall(url)
   data = resp.json()
@@ -75,15 +78,39 @@ def getStudentInfo(schoolCode):
   f.close() 
   print('Wrote ' + str(linecount) + ' students to "students.csv"')
 
+#displays a specfic student's information on the console 
 def getStudentInfo_SID(schoolCode, studentID):
-  url = baseURL + str(schoolCode) + "/students" + str(studentID)
+  url = baseURL + str(schoolCode) + "/students/" + str(studentID) + "/extended"
+  resp = makeAPICall(url)
+  data = resp.json()
+  print(json.dumps(data, indent=4))
 
+#generates a CSV file of all student info from a specfic school in a specific grade level
 def getStudentInfo_GL(schoolCode, gradeLevel):
-  url = baseURL + str(schoolCode) + "/students/grade/" + str(gradeLevel)
+  url = baseURL + str(schoolCode) + "/students/grade/" + str(gradeLevel) + "/extended"
+  resp = makeAPICall(url)
+  data = resp.json()
+  linecount = -1
 
+  #https://gist.github.com/mabroor/2828962
+  f = open("students_grade_" + gradeLevel + ".csv", 'w')
+  fieldnames = data[0].keys()
+  csvwriter = csv.DictWriter(f, delimiter=',', fieldnames=fieldnames)
+  csvwriter.writerow(dict((fn, fn) for fn in fieldnames))
+  for row in data:
+      csvwriter.writerow(row)
+      linecount += 1
+  f.close() 
+  print('Wrote ' + str(linecount) + ' students to "students_grade_' + gradeLevel + '.csv"')
+
+#displays a specfic student's information on the console 
 def getStudentInfo_NM(schoolCode, studentNumber):
-  url = baseURL + str(schoolCode) + "/students/sn/" + str(studentNumber)
+  url = baseURL + str(schoolCode) + "/students/sn/" + str(studentNumber) + "/extended"
+  resp = makeAPICall(url)
+  data = resp.json()
+  print(json.dumps(data, indent=4))
 
 #main
 if __name__ == "__main__":
-  getStudentInfo("994")
+  getStudentInfo_NM("994", "9")
+  
