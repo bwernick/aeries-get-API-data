@@ -1,9 +1,10 @@
-import requests
-import csv
-import json
-import argparse
+import requests, csv, json, argparse
 
-baseURL = "https://demo.aeries.net/aeries/api/v5/schools/" #base url to acess the aeries demo api
+#base url to acess the Aeries API (default is the Aeries demo API)
+baseURL = "https://demo.aeries.net/aeries/api/v5/schools/" 
+
+#header for Aeries API
+#place your Aeries cert here (this is not secure at all)
 headers = {'content-type': 'application/json',
             "AERIES-CERT": "477abe9e7d27439681d62f4e0de1f5e1"
           }
