@@ -20,7 +20,7 @@ Using Python and the Aeries API to get data.
 ## Usage
 
 ### All school codes and school names
-```python3 data.py getSchools 0```
+```python3 data.py getSchools ```
 
 ### Specfic School Information
 ```python3 data.py getSchools_SC <schoolCode>```
