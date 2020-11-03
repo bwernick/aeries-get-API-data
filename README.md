@@ -3,7 +3,7 @@ Using Python and the Aeries API to get data.
 
 ## Usage
 1. Download `data.py` and `setup.json`
-2. Set the API URL in `setup.json`
+2. Set your API URL in `setup.json`
 3. Set your API cert in `setup.json`
    - Example using the Aeries Demo API:
    
@@ -14,6 +14,7 @@ Using Python and the Aeries API to get data.
         "AERIES-CERT" : "477abe9e7d27439681d62f4e0de1f5e1"
       } 
     ```
+4. Run data.py
 
 ### All school codes and school names
 ```python3 data.py getSchools 0```
