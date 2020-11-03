@@ -1,16 +1,19 @@
 import requests, csv, json, argparse
 from argparse import ArgumentParser
 
+#loads data from setup.json
+setupData = json.load(open("setup.json"))
+
 #base url to acess the Aeries API (default is the Aeries demo API)
-baseURL = "https://demo.aeries.net/aeries/api/v5/schools/" 
+baseURL = setupData["baseURL"]
 
 #header for Aeries API
 #place your Aeries cert here (this is not secure at all)
-headers = {'content-type': 'application/json',
-            "AERIES-CERT": "477abe9e7d27439681d62f4e0de1f5e1"
+headers = {'content-type': setupData["content-type"],
+            "AERIES-CERT": setupData["AERIES-CERT"]
           }
 path = []
-        
+
 #simple api call function        
 def makeAPICall(url):
   return requests.get(url, headers=headers)
