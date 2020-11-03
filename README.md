@@ -1,7 +1,9 @@
 # aeries-get-API-data
 Using Python and the Aeries API to get data.
 
-## Usage
+-Todo: Get Student Data Changes
+
+## Setup
 1. Download `data.py` and `setup.json`
 2. Set your API URL in `setup.json`
 3. Set your API cert in `setup.json`
@@ -14,7 +16,8 @@ Using Python and the Aeries API to get data.
         "AERIES-CERT" : "477abe9e7d27439681d62f4e0de1f5e1"
       } 
     ```
-4. Run data.py
+
+## Usage
 
 ### All school codes and school names
 ```python3 data.py getSchools 0```
