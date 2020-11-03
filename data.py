@@ -1,4 +1,5 @@
 import requests, csv, json, argparse
+from argparse import ArgumentParser
 
 #base url to acess the Aeries API (default is the Aeries demo API)
 baseURL = "https://demo.aeries.net/aeries/api/v5/schools/" 
@@ -61,16 +62,16 @@ def getStudentInfo_CSV(schoolCode):
 #displays a specfic student's information on the console 
 def getStudentInfo_SID(schoolCode, studentID):
   schoolCode = args.schoolCode
-  schoolCode = args.studentID
+  studentID = args.studentID
   url = baseURL + str(schoolCode) + "/students/" + str(studentID) + "/extended"
   resp = makeAPICall(url)
   data = resp.json()
   print(json.dumps(data, indent=4))
 
 #generates a CSV file of retrived student info from a specfic school in a specific grade level
-def getStudentInfo_GL(schoolCode, gradeLevel):
+def getStudentInfo_GL_CSV(schoolCode, gradeLevel):
   schoolCode = args.schoolCode
-  schoolCode = args.gradeLevel
+  gradeLevel = args.gradeLevel
   url = baseURL + str(schoolCode) + "/students/grade/" + str(gradeLevel) + "/extended"
   resp = makeAPICall(url)
   data = resp.json()
@@ -88,37 +89,40 @@ def getStudentInfo_GL(schoolCode, gradeLevel):
   print('Wrote ' + str(linecount) + ' students to "students_grade_' + gradeLevel + '.csv"')
 
 #command line function calling achieved via argparse
-#Reference: https://docs.python.org/3/library/argparse.html, https://stackoverflow.com/a/30669126
-p = argparse.ArgumentParser()
-subparsers = p.add_subparsers()
+#Reference: https://docs.python.org/3/library/argparse.html, https://stackoverflow.com/a/30669126, https://stackoverflow.com/a/24584876
+parser = ArgumentParser()
+parser.add_argument("function", 
+                    nargs="?",
+                    choices=['getSchools', 'getSchools_SC', 'getSchoolBellSchedule', 'getStudentInfo_CSV', 'getStudentInfo_SID', 'getStudentInfo_GL_CSV'],
+                    default='getSchools',
+                    )
+args, sub_args = parser.parse_known_args()
 
-#parser for getSchools_SC
-getSchools_SC_parser = subparsers.add_parser('getSchools_SC')
-getSchools_SC_parser.add_argument('schoolCode')
-getSchools_SC_parser.set_defaults(func=getSchools_SC)
+# Manually handle the default for "function"
+function = "getSchools" if args.function is None else args.function
 
-#parser for def getSchoolBellSchedule:
-BellSchedule_parser = subparsers.add_parser('getSchoolBellSchedule')
-BellSchedule_parser.add_argument('schoolCode')
-BellSchedule_parser.set_defaults(func=getSchoolBellSchedule)
-
-#parser for getStudentInfo_CSV
-getStudentInfo_CSV_parser = subparsers.add_parser('getStudentInfo_CSV')
-getStudentInfo_CSV_parser.add_argument('schoolCode')
-getStudentInfo_CSV_parser.set_defaults(func=getStudentInfo_CSV)
-
-#parser for getStudentInfo_SID
-getStudentInfo_SID_parser = subparsers.add_parser('getStudentInfo_SID')
-getStudentInfo_SID_parser.add_argument('schoolCode')
-getStudentInfo_SID_parser.add_argument('studentID')
-getStudentInfo_SID_parser.set_defaults(func=getStudentInfo_SID)
-
-#parser for getStudentInfo_GL
-getStudentInfo_GL_parser = subparsers.add_parser('getStudentInfo_GL')
-getStudentInfo_GL_parser.add_argument('schoolCode')
-getStudentInfo_GL_parser.add_argument('gradeLevel')
-getStudentInfo_GL_parser.set_defaults(func=getStudentInfo_GL)
-
-#do the parse
-args = p.parse_args()
-args.func(args)
+# Parse the remaining args as per the selected subcommand
+if function == "getSchools":
+  getSchools()
+elif function == "function2":
+  parser.add_argument('schoolCode')
+  args = parser.parse_args(sub_args)
+  getSchools_SC(args.schoolCode)
+elif function == "getSchoolBellSchedule":
+  parser.add_argument('schoolCode')
+  args = parser.parse_args(sub_args)
+  getSchoolBellSchedule(args.schoolCode)
+elif function == "getStudentInfo_CSV":
+  parser.add_argument('schoolCode')
+  args = parser.parse_args(sub_args)
+  getStudentInfo_CSV(args.schoolCode)
+elif function == "getStudentInfo_SID":
+  parser.add_argument('schoolCode')
+  parser.add_argument('studentID')
+  args = parser.parse_args(sub_args)
+  getStudentInfo_SID(args.schoolCode, args.studentID)
+elif function == "getStudentInfo_GL_CSV":
+  parser.add_argument('schoolCode')
+  parser.add_argument('gradeLevel')
+  args = parser.parse_args(sub_args)
+  getStudentInfo_GL_CSV(args.schoolCode, args.gradeLevel)
