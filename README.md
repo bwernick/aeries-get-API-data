@@ -7,7 +7,8 @@ Using Python and the Aeries API to get data.
 3. Set your API cert in `setup.json`
    - Example using the Aeries Demo API:
    
-   ```{
+   ```
+      {
         "baseURL" : "https://demo.aeries.net/aeries/api/v5/schools/" ,
         "content-type" : "application/json",
         "AERIES-CERT" : "477abe9e7d27439681d62f4e0de1f5e1"
